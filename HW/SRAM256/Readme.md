@@ -1,0 +1,1 @@
+Von der ROA64 abgeleitete Speicherkarte zum Einsatz von 8x32kB = 256kB SRAM. Erstellt von RV und Deff.

@@ -1,1 +1,1 @@
-
+Platinenlayouts zur Neuauflage des NKC
