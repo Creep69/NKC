@@ -1,0 +1,1 @@
+verbesserte Neuauflage der IOE des NKC - parallele I/O-Platine
