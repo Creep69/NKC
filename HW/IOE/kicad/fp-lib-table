@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name nkc)(type KiCad)(uri /home/marcel/Projekte/kicad/modules/eigene/nkc.pretty)(options "")(descr ""))
+)
