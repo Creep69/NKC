@@ -1,0 +1,1 @@
+verbesserte Neuauflage der SER des NKC - serielle I/O-Platine
