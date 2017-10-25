@@ -1,0 +1,20 @@
+Jumperbelegung
+
+JP1 
+Speicherauswahl für IC3 und 4
+1-2 6264 (8kx8)
+2-3 6116 (2kx8)
+
+JP2
+Speicherauswahl für IC1 und 2
+1-2 2764 (8kx8)
+2-3 2716 (2kx8)
+
+JP3
+Adressen 16-19
+bei z80 sind alle geschlossen
+bei 680xx sind alle offen
+
+JP4
+2-3 für CPU 6809
+1-2 für alle anderen CPU
