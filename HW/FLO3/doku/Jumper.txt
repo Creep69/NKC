@@ -1,0 +1,42 @@
+Jumperbelegung
+
+Standardmässig sind die Juper wie folgt gesteckt:
+JP1 nach Bedarf
+JP2 auf 3
+JP3 auf 4 und 5
+JP4 gesetzt
+JP5 auf 1
+JP6 1-2
+JP7 auf 1, 3 und 5
+
+JP1
+Anschlussmöglichkeit für Dioden als Komponente der Ready Erzeugung. Die Dioden werden für Laufwerke benötigt, die keinen Ready Ausgang haben. Ein vorhandener Ready Ausgang liegt auf Pin34 der 34 poligen Steckerleiste.
+Er liegt in der Schaltung auf dem gemeinsamen Ready Eingang der Dioden (Anode). Für ein Laufwerk mit Ready Ausgang dürfen die Dioden nichts beeinflussen, daher darf der zugehörige Jumper nicht gesteckt sein!
+
+JP2
+Mit diesem Jumper werden die Wait-Zyklen, die die Flo3 erzeugen soll eingestellt. Sinnvoll ist die Einstellung des Jumpers nur bei CPU Taktfrequenzen größer 8Mhz. Die einzelnen Brücken sind mit "1", "2" unsw. beschriftet, was der Anzahl der Wait-Zyklen entspricht.
+Es darf nur ein Jumper gesetzt sein, da sonst der 74LS164 zerstört werden kann.
+
+JP3
+Dient der Einstellung des I/O Ports, Standard ist C0-C8. Ein offener Jumper bedeutet dabei 1 und geschlossen 0. Bei Port C0-C8 müssen A4 und A5 gesteckt sein.
+
+JP4
+Dient der Trennung des Interrupts vom Bus. Bei Z80 Systemen muss er gesteckt sein, bei 680xx geschlossen.
+
+JP5
+Dient zum Einstellen des "Motor On" Signales. Dabei gibt es 3 Möglichkeiten:
+1 das Signal wird über den Head Load gesteuert
+2 das Signal wird über Bit 6 des Ports C5 gesteuert
+3 das Signal wird auf Masse gelegt, damit läuft der Spindelmotor ständig
+
+JP6
+Damit kann die Steuerleidung "Side" (Laufwerkseite) eingestellt werden.
+1-2 erfolgt per Softwaree über das Bit 7 des Ports C5
+2-3 erfolgt per Hardware über den SSO Ausgang des IC9 (FD1797)
+
+JP7
+Einstellung der Precompensation, siehe dazu Kapitel 7.1.3 der Originalanleitung der Flo3
+
+
+
+
