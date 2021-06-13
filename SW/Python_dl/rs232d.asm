@@ -1,14 +1,10 @@
-;***************************
-; RS232 Up/Downloader
-; (C) by Abdreas Voggeneder
-;***************************
         org $400
 
         ; CRC Polynomial
-        POLY equ $1021
-        CPU equ 2       ;
+        POLY equ $1021  ; CCITT CRC16 Polynomial
+        CPU equ 2
 
-;       ser_base equ $ffe0
+;        ser_base equ $ffe0
         ser_base equ $fff0
         ser_data equ (ser_base)*CPU
         ser_stat equ (ser_base+1)*CPU
@@ -24,13 +20,18 @@
         MAX_BS equ 1024
         MAX_HEADER equ 27
 
+MACRO SER_CHK_ERR
+        btst.b #2,ser_stat.w
+        bne err2
+ENDMACRO
+
 start:  moveq #25,d7
         trap #6                 ; Read baudrate from commandline
                                 ; A0 points now to parameters
         movea.l a0,a1           ; Store it to A1
         moveq #0,d7
         trap #6                 ; Get length of string
-;       lea br_57600(pc),a3     ; Default is 57600
+;        lea br_57600(pc),a3     ; Default is 57600
         lea br_19200(pc),a3     ; Default is 19200 (max for original ser)
         tst.w d1
         beq.s default_br
@@ -89,7 +90,7 @@ m2:     moveq #!csts,d7
         cmp.b #'x',d0
         beq exit
 no_char:
-        btst.b #3,ser_stat.w
+        btst.b #3,ser_stat.w    ; Byte received?
         beq.s m2
 ;        moveq #!si,d7
 ;        trap #1
@@ -418,13 +419,6 @@ ser_si: move.b ser_stat.w,d0
         move.b ser_data.w,d0
         rts
 
-;test:   lea buffer(pc),a0
-;       clr.w count.w
-;test1:  bsr.s ser_si
-;        move.b d0,(a0)+
-;        addq #1,count.w
-;        bra.s test1
-
 ; if D0.b=0 -> ACK otherwise NACK
 ack_nack:
         move.b #'O',d1
@@ -442,8 +436,9 @@ rx_header: lea header(pc),a0
         ; 1. Length (two byte)
         moveq #1,d6
 hdr1:
-        btst.b #2,ser_stat.w
-        bne.s err2
+;        btst.b #2,ser_stat.w
+;        bne.s err2
+        .SER_CHK_ERR
 
         bsr.s ser_si
 
@@ -458,8 +453,9 @@ hdr1:
         move.w d3,d6
 
         ; 2. Header opcode 'H'
-        btst.b #2,ser_stat.w
-        bne.s err2
+;        btst.b #2,ser_stat.w
+;        bne.s err2
+        .SER_CHK_ERR
 
         bsr.s ser_si
         bsr upd_crc
@@ -467,8 +463,10 @@ hdr1:
         bne.s err1
         move.b d0,(a0)+
 
-rx1:    btst.b #2,ser_stat.w
-        bne.s err2
+rx1:
+;        btst.b #2,ser_stat.w
+;        bne.s err2
+        .SER_CHK_ERR
 
         bsr.s ser_si
         move.b d0,(a0)+
@@ -507,8 +505,9 @@ frame2:
         moveq #$FF,d1           ; init CRC
         movea.l a0,a5           ; backup A0 in A5
 frame1:
-        btst.b #2,ser_stat.w    ; abort in case of an overflow
-        bne.s err2
+;        btst.b #2,ser_stat.w    ; abort in case of an overflow
+;        bne.s err2
+        .SER_CHK_ERR
 
         bsr ser_si
 
@@ -534,8 +533,10 @@ rx_ok1:
         move.w d3,d6
         subq.w #1,d6            ; correct for dbra
 
-rx2:    btst.b #2,ser_stat.w
-        bne.s err2
+rx2:
+;        btst.b #2,ser_stat.w
+;        bne.s err2
+        .SER_CHK_ERR
 
         bsr ser_si
         move.b d0,(a0)+
@@ -545,8 +546,9 @@ rx2:    btst.b #2,ser_stat.w
         ; Now read 2 bytes CRC
         moveq #1,d6
 f_crc:
-        btst.b #2,ser_stat.w    ; abort in case of an overflow
-        bne.s err2
+;        btst.b #2,ser_stat.w    ; abort in case of an overflow
+;        bne.s err2
+        .SER_CHK_ERR
 
         bsr ser_si
         move.b d0,(a0)+
@@ -612,8 +614,6 @@ tx2:    move.b (a0)+,d0
         ; Now send 2 bytes CRC
         moveq #1,d6
 
-;        btst.b #2,ser_stat.w    ; abort in case of an overflow
-;        bne err2
         move.w d1,d0
         rol.w #8,d0             ; swap bytes
 tx_crc:
