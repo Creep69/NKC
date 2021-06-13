@@ -45,14 +45,19 @@ sowie eine Basisaddresse der SER von 0xFFF0
 Wenn der Transfer nicht funktioniert kann es ev. an den RTS/CTS Leitungen liegen. Diese werden aktuell nicht verwendet jedoch hat der RC6551 
 der in der original-Ser verwendet wird einen nicht abschaltbaren HW-Handshake
 
+Known Issues:
+*************
+Beim Transfer von ASCII-Dokumenten wird das File-Ende nicht korrekt zwischen Windows <-> NKC konvertiert. Das hat zur folge dass am Ende der Datei oft noch Schrott (max 1kBytes) angehängt ist. An einer korrekten konvertierung von ASCII Files (.asm, ...) arbeite ich derzeit noch.
+
 Installation Python 3.9
 ***********************
 1.) Python 3.9 aus Microsoft Store runter laden und installieren
   oder optional von hier (Python 3.9.5): https://www.python.org/downloads/release/python-395/
 
 2.) Fehlende Python Module installieren
-   pip install serial
-   pip install pyserial
+   Windows Terminal öffnen und folgende Befehle eingeben:
+   - pip install serial
+   - pip install pyserial
 Generell können in Python fehlende Module mit dem Python Packet Manager (pip) einfach nachinstalliert werden   
 
   
