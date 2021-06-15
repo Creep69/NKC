@@ -76,7 +76,7 @@ ser_init:
 wait_cmd: ;moveq #!sosts,d7
         ;trap #1
         ;beq.s m2
-        ;btst.b #4,ser_stat.w
+        ;btst.b #4,ser_stat     ; lange Adresse
         ;bne.s m2
         moveq #'?',d0
 ;        moveq #!so,d7
@@ -90,7 +90,7 @@ m2:     moveq #!csts,d7
         cmp.b #'x',d0
         beq exit
 no_char:
-        btst.b #3,ser_stat.w    ; Byte received?
+        btst.b #3,ser_stat      ; Byte received?
         beq.s m2
 ;        moveq #!si,d7
 ;        trap #1
@@ -258,7 +258,7 @@ no_drive:
         moveq #4,d2     ; Debug
         tst.b d0
         bne.s f_nf
-        ; dateilûnge ist nun in d1.l
+        ; dateilaenge ist nun in d1.l
         ; nun als BE zum Host senden
         move.l d1,d0    ; Store file size in d0
         bra.s f_ok
@@ -436,7 +436,7 @@ rx_header: lea header(pc),a0
         ; 1. Length (two byte)
         moveq #1,d6
 hdr1:
-;        btst.b #2,ser_stat.w
+;        btst.b #2,ser_stat
 ;        bne.s err2
         .SER_CHK_ERR
 
@@ -453,7 +453,7 @@ hdr1:
         move.w d3,d6
 
         ; 2. Header opcode 'H'
-;        btst.b #2,ser_stat.w
+;        btst.b #2,ser_stat
 ;        bne.s err2
         .SER_CHK_ERR
 
@@ -464,7 +464,7 @@ hdr1:
         move.b d0,(a0)+
 
 rx1:
-;        btst.b #2,ser_stat.w
+;        btst.b #2,ser_stat
 ;        bne.s err2
         .SER_CHK_ERR
 
@@ -505,7 +505,7 @@ frame2:
         moveq #$FF,d1           ; init CRC
         movea.l a0,a5           ; backup A0 in A5
 frame1:
-;        btst.b #2,ser_stat.w    ; abort in case of an overflow
+;        btst.b #2,ser_stat      ; abort in case of an overflow
 ;        bne.s err2
         .SER_CHK_ERR
 
@@ -534,7 +534,7 @@ rx_ok1:
         subq.w #1,d6            ; correct for dbra
 
 rx2:
-;        btst.b #2,ser_stat.w
+;        btst.b #2,ser_stat
 ;        bne.s err2
         .SER_CHK_ERR
 
@@ -546,7 +546,7 @@ rx2:
         ; Now read 2 bytes CRC
         moveq #1,d6
 f_crc:
-;        btst.b #2,ser_stat.w    ; abort in case of an overflow
+;        btst.b #2,ser_stat      ; abort in case of an overflow
 ;        bne.s err2
         .SER_CHK_ERR
 
@@ -675,8 +675,8 @@ upd_crc: move.w d1,d2
         eor.w d2,d1
         rts
 
-siinit: move.b d0,ser_ctrl.w
-        move.b d1,ser_cmd.w
+siinit: move.b d0,ser_ctrl      ; lange Adressen
+        move.b d1,ser_cmd
         rts
 
 
