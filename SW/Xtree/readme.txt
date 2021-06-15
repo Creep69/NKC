@@ -2,7 +2,7 @@ Xtree für Jados
 (C) Andreas Voggeneder
 
 XT ist ein Dateimanager mit semigraphischer Oberfläche und ist dem Xtree-Pro aus DOS Zeiten nachempfunden.
-Voraussetzung ist eine GDP64HS!
+Voraussetzung ist eine GDP64HS oder GDP64-FPGA!
 
 Kurzanleitung:
 Nach dem Start werden alle Dateien im aktuellen Laufwerk dargestellt.
