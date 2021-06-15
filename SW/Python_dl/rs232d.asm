@@ -25,7 +25,8 @@ MACRO SER_CHK_ERR
         bne err2
 ENDMACRO
 
-start:  moveq #25,d7
+start:  movem.l d0-d7/a0-a6,-(a7)
+        moveq #25,d7
         trap #6                 ; Read baudrate from commandline
                                 ; A0 points now to parameters
         movea.l a0,a1           ; Store it to A1
@@ -51,20 +52,18 @@ brsearch:
         move.b d1,d0
         bra.s ser_init
 default_br:
-        moveq #$1f,d0          ; 19200,n,8,1
-        ;moveq #$14,d0           ; 57600,n,8,1
+        moveq #CTRL_BR19200,d0   ; 19200,n,8,1
+        ;moveq #CTRL_BR57600,d0  ; 57600,n,8,1
 ser_init:
         moveq #$0b,d1
-        move.b d0,ser_debug
-;        moveq #!siinit,d7
-;        trap #1
+;        move.b d0,ser_debug
         bsr siinit
         bsr init_crc
 
         lea welcome_msg(pc),a0
         moveq #7,d7
         trap #6                 ; Schreibe
-        movea a3,a0
+        movea.l a3,a0
         moveq #7,d7
         trap #6                 ; Write Baudrate
         lea part2(pc),a0
@@ -73,14 +72,8 @@ ser_init:
         lea con_stat(pc),a0
         clr.b (a0)
 
-wait_cmd: ;moveq #!sosts,d7
-        ;trap #1
-        ;beq.s m2
-        ;btst.b #4,ser_stat     ; lange Adresse
-        ;bne.s m2
+wait_cmd:
         moveq #'?',d0
-;        moveq #!so,d7
-;        trap #1
         bsr ser_so
 m2:     moveq #!csts,d7
         trap #1
@@ -92,8 +85,6 @@ m2:     moveq #!csts,d7
 no_char:
         btst.b #3,ser_stat      ; Byte received?
         beq.s m2
-;        moveq #!si,d7
-;        trap #1
         bsr ser_si
 b1:     cmp.b #'U',d0
         ;bne.s wait_cmd
@@ -133,15 +124,6 @@ rx:     bsr.s check_connected
         bra.s rx_payload
 rx_fail:
         ; Failure -> Print error Message
-;        cmp.b #2,d0
-;        bls.s rxf1
-;        moveq #1,d0     ; Default error msg
-;rxf1:   lea err_str_table(pc),a0
-;        subq.b #1,d0
-;        lsl.b #2,d0     ; *4
-;        ext.w d0
-;        movea.l 0(a0,d0.w),a0   ; print message
-;        jsr (a0)
         lea err_str_table(pc),a0
         bsr pr_err
         moveq #1,d0
@@ -194,7 +176,7 @@ rx_done:
         and.w #$07FF,d0
         beq.s m5
         addq.l #1,d2
-m5:     move.l d2,count ; DEBUG
+m5:     ;move.l d2,count ; DEBUG
         moveq #57,d7
         trap #6
         moveq #14,d7
@@ -204,7 +186,8 @@ done:   lea done_msg(pc),a0
         moveq #7,d7
         trap #6
         bra wait_cmd
-exit:   rts
+exit:   movem.l (a7)+,d0-d7/a0-a6
+        rts
 
 ;; **** Transmit file
 tx_fail:
@@ -232,10 +215,6 @@ tx_hdr_ok:
         bne.s no_drive
         clr.w d0
         move.b (a0),d0          ; Get drive letter
-;        cmp.b #'A',d0
-;        bls.s d1
-;        sub.b #'A',d0
-;        bra.s d2
 d1:     sub.b #'0',d0
 d2:     moveq #54,d7
 ;        move.w d0,debug1
@@ -245,7 +224,6 @@ no_drive:
 
 ;*** 1. Anzahl bytes senden (32 bit)
 ;; 1.1 Datei-info abfragen
-;;        lea fname(pc),a0
         lea fcb(pc),a1
         moveq #18,d7    ; fillfcb
         trap #6
@@ -307,18 +285,12 @@ tx_loop:
         bhi.s tx1
         move.w d5,d4            ; copy remains to d4
 tx1:
-;        moveq #'.',d0
-;       movem.l a0-a2,-(a7)
-;       moveq #!co,d7
-;       trap #1
-;       movem.l (a7)+,a0-a2
         lea progress(pc),a2       ; print status
         bsr tx_frame
-        move.b d0,status_debug
+;        move.b d0,status_debug
         moveq #10,d2            ; Error #
         tst.b d0
         bne tx_fail             ; no recoverable error
-;        bne ferr
         sub.l d4,d5             ; substract from fs
         bne.s tx_loop
         ; Successfully Done :-)
@@ -354,7 +326,6 @@ progress:
 print_info:
         moveq #7,d7
         trap #6
-;        lea fname(pc),a0
         movea.l a1,a0
         moveq #7,d7
         trap #6
@@ -389,12 +360,14 @@ ferr:   lea err_msg(pc),a0
         moveq #7,d7
         trap #6         ; Print filename received
         clr.l d0
+        bsr pr_crlf
+        bra wait_cmd
+
 pr_crlf: lea crlf(pc),a0
         adda.l d0,a0
 ;        movea.l d0,a0
         moveq #7,d7
         trap #6         ; CRLF
-
         rts
 
 rx_err: lea rxerr(pc),a0
@@ -468,12 +441,12 @@ rx1:
 ;        bne.s err2
         .SER_CHK_ERR
 
-        bsr.s ser_si
+        bsr ser_si
         move.b d0,(a0)+
         bsr upd_crc
         dbra d6,rx1
 
-        move.w d1, crc_debug
+;        move.w d1, crc_debug
         moveq #0, d0        ; status ok
         tst.w d1
         beq.s rx_crc_ok
@@ -482,13 +455,13 @@ rx_crc_ok:
         moveq #11,d7
         lea hdr_fn(pc),a0
         trap #6         ; Upper Case
-        move.b d0,status_debug
+;        move.b d0,status_debug
         rts
 err1:   moveq #1,d0
-        move.b d0, status_debug
+;        move.b d0, status_debug
         rts
 err2:   moveq #2,d0    ; Overflow occured
-        move.b d0,status_debug
+;        move.b d0,status_debug
         rts
 
 ; A0 points to buffer
@@ -496,7 +469,7 @@ err2:   moveq #2,d0    ; Overflow occured
 ; nr of bytes received in D4
 rx_frame:
         lea crc_buffer(pc),a1
-        clr.w len_debug
+;        clr.w len_debug
 
         ; 1. Length (two byte)
         moveq #1,d6
@@ -515,7 +488,7 @@ frame1:
         lsl.w #8,d3
         or.b d0,d3      ; store len in d3
         dbra d6,frame1
-        move.w d3,len_debug
+;        move.w d3,len_debug
 
         move.b hdr_bs(pc),d0    ; check against Blocksize
         lsl.w #8,d0
@@ -542,7 +515,7 @@ rx2:
         move.b d0,(a0)+
         bsr upd_crc
         dbra d6,rx2
-        move.w d1,crc_debug
+;        move.w d1,crc_debug
         ; Now read 2 bytes CRC
         moveq #1,d6
 f_crc:
@@ -587,7 +560,7 @@ f_crc_ok:
 ; nr of bytes to transmit in D4
 tx_frame:
         lea crc_buffer(pc),a1
-        clr.w len_debug
+;        clr.w len_debug
         movea.l a0,a5           ; Backup A0
         moveq #5,d7        ; max. retries
 tx_fr2:
@@ -610,7 +583,7 @@ tx2:    move.b (a0)+,d0
         bsr ser_so
         bsr.s upd_crc
         dbra d6,tx2
-        move.w d1,crc_debug
+;        move.w d1,crc_debug
         ; Now send 2 bytes CRC
         moveq #1,d6
 
@@ -721,14 +694,14 @@ ds 0
 bytes_read: ds.l 1        ; bytes_read
 
 crc_buffer: ds.w 256
-count: ds.l 1
-len_debug: ds.w 1
-blocksize: ds.w 1
-crc_debug: ds.w 1
-ser_debug: dc.b 1
-status_debug: dc.b 1
-ds 0
-debug1: ds.l 1
+;count: ds.l 1
+;len_debug: ds.w 1
+;blocksize: ds.w 1
+;crc_debug: ds.w 1
+;ser_debug: dc.b 1
+;status_debug: dc.b 1
+;ds 0
+;debug1: ds.l 1
 ds 0
 fcb: ds.b 48
 buffer:
