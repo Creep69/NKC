@@ -1,11 +1,11 @@
-        org $400
+;        org $400       ; kein ORG in Jados
 
         ; CRC Polynomial
         POLY equ $1021  ; CCITT CRC16 Polynomial
         CPU equ 2
 
 ;        ser_base equ $ffe0
-        ser_base equ $fff0
+        ser_base equ $fffffff0          ; lange Adressen
         ser_data equ (ser_base)*CPU
         ser_stat equ (ser_base+1)*CPU
         ser_cmd equ  (ser_base+2)*CPU
@@ -21,7 +21,7 @@
         MAX_HEADER equ 27
 
 MACRO SER_CHK_ERR
-        btst.b #2,ser_stat.w
+        btst.b #2,ser_stat      ; lange Adresse
         bne err2
 ENDMACRO
 
@@ -258,7 +258,7 @@ no_drive:
         moveq #4,d2     ; Debug
         tst.b d0
         bne.s f_nf
-        ; dateilûnge ist nun in d1.l
+        ; dateilÃ»nge ist nun in d1.l
         ; nun als BE zum Host senden
         move.l d1,d0    ; Store file size in d0
         bra.s f_ok
@@ -407,16 +407,16 @@ overflow: lea ovf_msg(pc),a0
         trap #6
         rts
 
-ser_so: btst.b #4,ser_stat.w
+ser_so: btst.b #4,ser_stat      ; lange Adresse
         beq.s ser_so
-        move.b d0,ser_data.w
+        move.b d0,ser_data      ; lange Adresse
         rts
 
-ser_si: move.b ser_stat.w,d0
+ser_si: move.b ser_stat,d0      ; lange Adresse
         btst.b #3,d0
         beq.s ser_si
         lsl.w #8,d0
-        move.b ser_data.w,d0
+        move.b ser_data,d0      ; lange Adresse
         rts
 
 ; if D0.b=0 -> ACK otherwise NACK
