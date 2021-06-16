@@ -6,7 +6,7 @@ M EQU 16*1000*1000
 ANZAHL EQU 100
 
 CPU equ 2              ; 68000
-color equ $ffa0*CPU
+color equ $ffffffa0*CPU
 
 START:
          jsr @clr
