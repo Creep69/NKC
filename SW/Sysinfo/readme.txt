@@ -7,4 +7,4 @@ Die beiden o.g. Komponenten werden über die DIP-Key Stellung erkannt.
 
 Desweiteren gibt es noch ein paar Infos zum Speicher und dem Grundprogramm.
 
-Die sywsinfo.68k ist unverändert auf allen 68k-CPUs lauffähig.
+Die SYSINFO.68K ist unverändert auf allen 68k-CPUs lauffähig.
