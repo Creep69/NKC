@@ -18,6 +18,6 @@ Optionen:
 	-R = Umkehrung der Sortierreihenfolge
 	-H = Hilfe
 	
-Ohne Optionsangabe wird nach Deiteinamen sortiert.
+Ohne Optionsangabe wird nach Dateinamen sortiert.
 
 Die xdir.com ist auf allen 68k-CPUs lauffähig.
