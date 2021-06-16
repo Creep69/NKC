@@ -3,6 +3,7 @@ import time,sys
 import serial
 import os
 from optparse import OptionParser
+import ntpath
 
 from serial.serialutil import SerialTimeoutException, Timeout
 
@@ -67,7 +68,7 @@ class ser_file_transfer:
         header.extend(map(ord, 'H'))                                # 'H': 1
         header.extend(int(self.block_size/256).to_bytes(1,'little'))   # bs : 1
         header.extend(file_size.to_bytes(4,'big'))               # fs: 4
-        header.extend(map(ord, file_name))                          # file_name: <16
+        header.extend(map(ord, ntpath.basename(file_name)))        # file_name: <16
         terminator=0                                                # Terminator                        
         header.extend(terminator.to_bytes(1,'little'))              # zero : 1
         # calculate CRC of Header
@@ -142,8 +143,14 @@ class ser_file_transfer:
     def send_file(self,file_name):
         file_size = os.stat(file_name).st_size
         nr_blocks = int((file_size+self.block_size-1)/self.block_size)
+        file_content=bytearray()
         with open(file_name, "rb") as f:
             bytes_read = f.read()
+            file_content.extend(bytes_read)
+        if file_name[-4:] in [".asm",".txt"]:
+            terminator =0
+            file_content.extend(terminator.to_bytes(1,'little'))              # zero : 1
+            file_size +=1
         if self.check_slave_available()!=0:
             print("Serial slave not available")
             return 1
@@ -161,7 +168,7 @@ class ser_file_transfer:
         while block_nr<nr_blocks:
             idx1=block_nr*self.block_size
             idx2=min((block_nr+1)*self.block_size,file_size)
-            if self.send_frame(bytes_read[idx1:idx2])!=0:
+            if self.send_frame(file_content[idx1:idx2])!=0:
                 print("Error transmitting file")
                 return 1
             block_nr +=1

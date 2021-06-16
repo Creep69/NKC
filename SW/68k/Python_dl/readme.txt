@@ -42,12 +42,9 @@ sowie eine Basisaddresse der SER von 0xFFF0
 
         ser_base equ $fff0
 
-Wenn der Transfer nicht funktioniert kann es ev. an den RTS/CTS Leitungen liegen. Diese werden aktuell nicht verwendet jedoch hat der RC6551 
+Wenn der Transfer nicht funktioniert kann es ev. an den RTS/CTS Leitungen liegen. Diese werden aktuell nicht verwendet jedoch hat der 6551 UART 
 der in der original-Ser verwendet wird einen nicht abschaltbaren HW-Handshake
 
-Known Issues:
-*************
-Beim Transfer von ASCII-Dokumenten wird das File-Ende nicht korrekt zwischen Windows <-> NKC konvertiert. Das hat zur folge dass am Ende der Datei oft noch Schrott (max 1kBytes) angehängt ist. An einer korrekten konvertierung von ASCII Files (.asm, ...) arbeite ich derzeit noch.
 
 Installation Python 3.9
 ***********************
