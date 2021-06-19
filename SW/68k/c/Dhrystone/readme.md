@@ -3,6 +3,6 @@ Dhrystone Benchmark
 Implements https://en.wikipedia.org/wiki/Dhrystone
 
 Anmerkung:
-dhry.68k ist für einen 68000 (16-bit) compiliert und benötigt eine GDP-FPFA wegen dem Timer der zur Laufzeitmessung via Interrupt verwendet wird.
+dhry.68k ist fÃ¼r einen 68000 (16-bit) compiliert und benÃ¶tigt eine GDP64-FPGA wegen dem Timer der zur Laufzeitmessung via Interrupt verwendet wird.
 
 
