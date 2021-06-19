@@ -1,7 +1,5 @@
 #define BYTE_AT(adr) (*(unsigned char volatile *) adr)
 
-#define IOE_PORTA BYTE_AT(0xFFFFFF48)
-
 #define CNSTAT BYTE_AT(0xFFFFFFCA)
 #define CNDATA BYTE_AT(0xFFFFFFCB)
 
@@ -44,36 +42,34 @@ void printString(const char *s)
     }
 }
 
-/* read from CAS-neo DATA register */
+/* liest vom CAS-neo DATA register */
 char casRd(void)
 {
     while (!(CNSTAT & 1));
     return CNDATA;
 }
 
-/* write to CAS-neo DATA register */
+/* schreibt ins CAS-neo DATA register */
 void casWd(char data)
 {
     while (!(CNSTAT &2));
     CNDATA = data;
 }
 
-/* init CAS-neo to FAT mode */
+/* initialisiert die  CAS-neo im FAT mode */
 void initCas(void)
 {
     char temp;
     CNSTAT = CNRESET;
     CNSTAT = CNFAT;
-    temp = casRd();
-    IOE_PORTA = temp;
-    if (temp != 0x39)
+    if (casRd() != 0x39)
         printString("CAS-neo init error\r\n");
 }
 
+/* gibt den Verzeichnisinhalt einer SD-Karte im FAT-Modus der CAS-neo aus */
 void casDir(void)
 {
     char character;
-    initCas();
     casWd(CNDIR);
     character = casRd();
     while (character != 0)
@@ -86,7 +82,7 @@ void casDir(void)
 
 int main(void)
 {
-
+    /* CAS-neo initialisieren und Verzeichnis ausgeben */
     initCas();
     casDir();
 }
