@@ -308,9 +308,24 @@ m36:
       bne.s m38
       lea disklogtext(pc),a0          * Log Drive
       bsr fehler
-      sub.b #$30,d0
+brk:
+      cmp.b #'9',d0
+      bls.s is_num
+      cmp.b #'a',d0
+      blo m10
+      cmp.b #'z',d0
+      bhi m10
+      sub.b #'a'-5,d0
+      bra.s m38a
+
+is_num:
+      sub.b #'0',d0
       bmi m10
-      move d0,d2
+m38a: move d0,d2
+      cmp.b #5,d0
+      blo.s no_hdd
+      moveq #5,d0         ; lw num = 5 for HDD partitions
+no_hdd:
       moveq #82,d7
       trap #6
       ext.w d0
@@ -462,7 +477,7 @@ m53:
       trap #6                         * FCB fýr Quelldatei erstellen
       tst.b d0
       bne.s m53
-      move.b #' ',13(a2)              * Wieder ursprl. zustand im Directory herstellen
+      move.b #' ',13(a2)              * Wieder ursprl. zustand im Directory hers
       bsr untag                       * wenn getaggt, dann untaggen
 
       moveq #17,d7
@@ -1675,7 +1690,7 @@ end2:
       movem (a7)+,d0
       movem.l (a7)+,d1-d3/d7/a0-a1
       rts
-Fehler:
+fehler:
       movem.l a0,-(a7)
       moveq #10,d1
       moveq #15,d2
@@ -1690,9 +1705,14 @@ Fehler:
       trap #1
       moveq #!ci,d7
       trap #1
-      cmp.b #$40,d0
-      bls.s m37
-      bset #1,d0
+      cmp.b #'A',d0
+      blo.s m37
+      cmp.b #'Z',d0
+      bhi.s m37
+
+;      cmp.b #$60,d0
+;      bls.s m37
+      bset #5,d0        ; to_lower
 m37:
       movem.l (a7)+,a0
       movem d0,-(a7)
