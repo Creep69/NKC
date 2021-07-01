@@ -17,13 +17,12 @@ Befehle:
        Hierbei sind ? (ein zeichen) und * (alle nachfolgenden zeichen) möglich
        z.b. ??xy*.*
 -l...  Log drive. Aktuelles laufwerk wechseln.
-       Achtung hier ist ein bekannter Bug: für Laufwerk A muss "5", für B "6", ... eingegeben werden
+       z.B.: 0,1,A,B,...
 -e     Edit file. Editor mit aktuellem file starten
 -f     Filespecification z.b. "*.asm" oder "*.68k" oder a*.*
 
 Bekannte Probleme:
 ******************
-Wie oben angeführt muss für Festplatten (A,B,...) der Laufwerksbuchstabe 5,6,... eingegeben werden.
-Beim Kopieren auf z.B. Laufwerk A muss für das Ziel-Laufwerk "A:" (Großbuchstaben) eingegeben werden
+Keine
 
   
