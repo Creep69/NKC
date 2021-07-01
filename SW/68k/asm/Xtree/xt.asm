@@ -1,5 +1,5 @@
 * XtreePro fýr Jados
-* (C) 1990-2021 by Andreas Voggeneder
+* (C) 1990 by Andreas Voggeneder
 
 * Cursortasten
 rauf   equ $05
@@ -308,7 +308,6 @@ m36:
       bne.s m38
       lea disklogtext(pc),a0          * Log Drive
       bsr fehler
-brk:
       cmp.b #'9',d0
       bls.s is_num
       cmp.b #'a',d0
@@ -323,9 +322,9 @@ is_num:
       bmi m10
 m38a: move d0,d2
       cmp.b #5,d0
-      blo.s no_hdd
+      blo.s no_hdd1
       moveq #5,d0         ; lw num = 5 for HDD partitions
-no_hdd:
+no_hdd1:
       moveq #82,d7
       trap #6
       ext.w d0
@@ -406,7 +405,7 @@ m49:
       lea fcbbuf2(pc),a1
       moveq #18,d7
       trap #6                         * FCB fýr Quelldatei erstellen
-      move.b #' ',13(a3)              * Wieder ursprl. zustand im Directory herstellen
+      move.b #' ',13(a3)              * Wieder ursprl. zustand im Directory hers
       tst.b d0
       bne fehl
       lea fcbbuf1(pc),a1
@@ -498,7 +497,7 @@ m53:
       cmp.b #'j',d0                   * und Frage nochmal versuchen
       beq m53
 m52:
-      move.b #' ',13(a0)              * Wieder ursprl. Zustand im Directory herstellen
+      move.b #' ',13(a0)              * Wieder ursprl. Zustand im Directory hers
       lea anzfile(pc),a1
       bra m54
 m55:
@@ -535,7 +534,7 @@ m56:
       lea fcbbuf2(pc),a1
       moveq #18,d7
       trap #6                         * FCB fýr Quelldatei erstellen
-      move.b #' ',13(a3)              * Wieder ursprl. zustand im Directory herstellen
+      move.b #' ',13(a3)              * Wieder ursprl. zustand im Directory hers
       tst.b d0
       bne fehl1
       lea fcbbuf1(pc),a1
@@ -1191,7 +1190,12 @@ loop:
       trap #1
       moveq #53,d7
       trap #6                 * Aktuelles Laufwerk holen
-      add.b #$30,d0           * in ASCII umwandeln
+brk:
+      add.b #'0',d0           * in ASCII umwandeln
+      cmp.b #'5',d0
+      blo.s no_hdd
+      add.b #'A'-'5',d0
+no_hdd:
       lea drivebuf(pc),a0
       move.b d0,(a0)+
       move.b #':',(a0)+       * fýr spûter speichern
@@ -1321,6 +1325,9 @@ m59a:
       beq.s cancel
       cmp.b #':',1(a2)
       bne.s m59a
+      movea.l a2,a0
+      moveq #11,d7
+      trap #6                   ; Uppercase
       lea anzbuf(pc),a0
       move.w drivebuf(pc),(a0)  * Ziellaufwerk vor Dateinamen setzen
       lea anzbuf1(pc),a0
