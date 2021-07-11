@@ -314,10 +314,10 @@ errf1:  ;lea tx_err_str_table(pc),a0
 ; D0.b character used for progress
 progress:
 ;       moveq #'.',d0
-        movem.l a0-a2,-(a7)
+        movem.l a0-a2/a5, -(a7)
         moveq #!co,d7
         trap #1
-        movem.l (a7)+,a0-a2
+        movem.l (a7)+,a0-a2/a5
         rts
 
 ; A0 points to Message
@@ -471,10 +471,11 @@ rx_frame:
         lea crc_buffer(pc),a1
 ;        clr.w len_debug
 
-        ; 1. Length (two byte)
-        moveq #1,d6
+
         moveq #5,d7        ; max. retries
 frame2:
+        ; 1. Length (two byte)
+        moveq #1,d6
         moveq #$FF,d1           ; init CRC
         movea.l a0,a5           ; backup A0 in A5
 frame1:
