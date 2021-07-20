@@ -1,6 +1,6 @@
-RS232 Up/Downloader V0.3 11.06.2021
+RS232 Up/Downloader V0.5 20.07.2021
 (C) Andreas Voggeneder
-Alpha Version
+Beta Version
 
 Dieses Programm dient zum transfer von Dateien zwischen PC und NKC mittels RS232 Schinttstelle.
 Am NKC läuft dazu ein Slave der die Read/Write Kommandos vom PC entgegennimmt und ausführt.
@@ -9,6 +9,8 @@ Jeder Block wird einzeln übertragen und vom empfänger geprüft ob die CRC stim
 Am PC wird dazu ein Python-Host Programm gestartet das mit dem Slave der am NKC läuft Verbindung aufnimmt und den Trabsfer durchführt.
 
 "python dl.py --help" gibt eine Übersicht über alle möglichen parameter aus.
+
+Assembler: Grundprogramm
 
 Beispiel:
 (I) Senden einer Datei zum NKC:
@@ -29,7 +31,7 @@ Die empfangenen files sollten dann im aktuellen Laufwerk liegen
    python dl.py -p com1 -b 57600 -d 1:rs232d.asm
    
 
-Default (ohe commandline parameter) ist auf beiden Seiten (PC und NKC) 19200 Baud welches die max. mögliche Baudrate auf der alten Ser (6551 Uart) ist. 
+Default (ohne commandline parameter) ist auf beiden Seiten (PC und NKC) 19200 Baud welches die max. mögliche Baudrate auf der alten Ser (6551 Uart) ist. 
 Mit der GDP-FPGA sind max. 57600 Baud möglich
 
 ACHTUNG:
