@@ -13,8 +13,9 @@
 ;
         CTRL_BR9600 equ $1e
         CTRL_BR19200 equ $1f
-        CTRL_BR38400 equ $13    ; GDP-FPGA only
+        CTRL_BR38400 equ $15    ; GDP-FPGA only
         CTRL_BR57600 equ $14    ; GDP-FPGA only
+        CTRL_115200  equ $13    ; GDP-FPGA only
 
         MIN_BS equ 64
         MAX_BS equ 1024
@@ -658,11 +659,13 @@ br_9600: dc.b '9600',0
 br_19200: dc.b '19200',0
 br_38400: dc.b '38400',0
 br_57600: dc.b '57600',0
+br_115200: dc.b '115200',0
 ds 0
-brtable: dc.l br_9600, CTRL_BR9600
+brtable: dc.l br_9600,  CTRL_BR9600
          dc.l br_19200, CTRL_BR19200
-         dc.l br_38400,CTRL_BR38400
-         dc.l br_57600,CTRL_BR57600
+         dc.l br_38400, CTRL_BR38400
+         dc.l br_57600, CTRL_BR57600
+         dc.l br_115200,CTRL_115200
          dc.l 0,0
 
 welcome_msg: dc.b $d,$a,'RS232-Up/Downloader',$d,$a,'Baudrate: ',0
