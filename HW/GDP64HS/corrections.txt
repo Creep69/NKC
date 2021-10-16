@@ -1,0 +1,12 @@
+- offene Eingänge belegt:
+
+J1 ('05)
+J4 ('32)
+J5 ('08)
+J10 ('32)
+J11 ('04)
+J31 ('05)
+
+- Quarzoszillator
+- 7404 entfernt und Gatter von 74LS05 genutzt + PullUp
+
