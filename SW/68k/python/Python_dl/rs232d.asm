@@ -468,6 +468,7 @@ err2:   moveq #2,d0    ; Overflow occured
 ; A0 points to buffer
 ; A2 points to function to print status info. Ignored if null
 ; nr of bytes received in D4
+; status in D0
 rx_frame:
         lea crc_buffer(pc),a1
 ;        clr.w len_debug
