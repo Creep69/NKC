@@ -224,6 +224,20 @@ class ser_file_transfer:
             #bytes_read = f.read()
             f.write(file)
         print("Done. CRC OK")
+    def send_bl_command(self):
+        sent=self.ser.write(b"\r\nW\r\n");
+        if self.ser.in_waiting>0:
+            temp = self.ser.read(self.ser.in_waiting)
+            print(temp)
+        iterations=0
+        success=False
+        while iterations<100:
+            sent=self.ser.write(b'!');
+            xy=self.ser.read(1);
+            if xy==b'?':
+                success=True
+                break
+        return success
 
 
 print("NKC-Downloader by AVG")
@@ -232,6 +246,7 @@ parser.add_option("-d", "--download", dest="download", help="file to download", 
 parser.add_option("-u", "--upload", dest="upload", help="file to uploadload", metavar = "FILE") #, default="1:rs232d.asm")
 parser.add_option("-p", "--port", dest="port", help="COM-port", default="COM1")
 parser.add_option("-b", "--baud", dest="baud", help="Baudrate", default=19200, type=int )
+parser.add_option("-w", "--write", dest="boot", help="Start bootloader", default=False, action="store_true" )
 #parser.add_option("-r", "--receive", dest="receive", help="Receive Mode", default=True )
 (options, args) = parser.parse_args()
 
@@ -240,6 +255,10 @@ if (not (options.download or options.upload)):
     print("Invalid filename given")
     sys.exit()
 ft = ser_file_transfer(options)
+if (options.boot):
+    if(ft.send_bl_command()==False):
+        print("Failed to start Bootloader!")
+        exit
 if (options.upload != None):
     ft.send_file(options.upload)
 if (options.download != None):
