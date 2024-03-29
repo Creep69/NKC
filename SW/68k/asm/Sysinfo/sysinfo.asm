@@ -307,7 +307,14 @@ scsi:
  move #!hardtest, d7
  trap #1
  bcs.s scsi01
- lea v(pc), a0
+ lea scsidata(pc), a0
+ move #24, d1                   * SCSI-Befehl: Inquiry
+ move #1, d4                    * Laufwerks-ID 0
+ move #!harddisk, d7
+ trap #1
+ adda.l #32, a0                 * hinter String springen
+ clr.b (a0)                     * Null setzen
+ suba.l #24, a0                 * Offset f√ºr Name
  bra.s scsi10
 scsi01:
  lea nv(pc), a0
@@ -328,10 +335,10 @@ ide:
  bsr write
  bsr curtab2
  move #1, d4
- move #!idetest, d7             * IDE-MAster
+ move #!idetest, d7             * IDE-Master
  trap #1
  bcs.s ide05
- adda.l #8, a0                  * Offset f¸r Name
+ adda.l #8, a0                  * Offset f√ºr Name
  bsr write
  move #!crlf, d7
  trap #1
@@ -349,7 +356,7 @@ ide06:
  move #!idetest, d7
  trap #1
  bcs.s ide07
- adda.l #8, a0                  * Offset f¸r Name
+ adda.l #8, a0                  * Offset f√ºr Name
  bsr write
  bra.s ide08
 ide07:
@@ -375,7 +382,7 @@ sd001:
  move #!sdtest, d7              * SD0
  trap #1
  bcs.s sd002
- adda.l #8, a0                  * Offset f¸r Name
+ adda.l #8, a0                  * Offset f√ºr Name
  bsr write
  move #!crlf, d7
  trap #1
@@ -394,7 +401,7 @@ sd003:
  move #!sdtest, d7              * SD1
  trap #1
  bcs.s sd004
- adda.l #8, a0                  * Offset f¸r Name
+ adda.l #8, a0                  * Offset f√ºr Name
  bsr write
  bra.s sd005
 sd004:
@@ -452,7 +459,7 @@ ser02:
  move 0(a0, d2), (a1)+
  cmp.b #3*2, d0                 * 5 Datenbits
  bne.s ser03
- cmp.b #0, d2                   * keine Parit‰t
+ cmp.b #0, d2                   * keine Parit√§t
  bne.s ser03
  addq.l #1, d1                  * dann 1,5 Stop
 ser03:
@@ -558,10 +565,10 @@ cas:
  movea.l #casctrl, a0
  bsr makeport
  move.b   #$53, (a0)       * Reset an CAS-Neo
- move.b   #$52, (a0)       * FAT-Modus waehlen
+ move.b   #$52, (a0)       * FAT-Modus w√§hlen
  move.l   #$80000, d0           * Timeout
 caslp01:
- btst.b   #0, (a0)         * Pruefen ob Antwort
+ btst.b   #0, (a0)         * Pr√ºfen ob Antwort
  nop
  bne.s    caslp02               * Zeichen da
  subq.l   #1, d0
@@ -745,7 +752,7 @@ graka1:
 graka2:
  dc.b 'GDP64-HS', 0
 graka3:
- dc.b 'GDP64HS-FPGA Schwarz/Weiﬂ', 0
+ dc.b 'GDP64HS-FPGA Schwarz/Wei√ü', 0
 graka4:
  dc.b 'GDP64HS-FPGA Farbe', 0
 
@@ -766,6 +773,8 @@ flop:
 
 scsitxt:
  dc.b 'SCSI-Laufwerk: ', 0
+scsidata:
+ ds.b 36
 
 gide:
  dc.b 'IDE-Laufwerk: ', 0
@@ -863,5 +872,3 @@ castxt:
 
 iousbtxt:
  dc.b 'IO-USB: ', 0
-
-
