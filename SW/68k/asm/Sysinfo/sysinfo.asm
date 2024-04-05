@@ -299,7 +299,7 @@ scsi:
  bsr curtab
  move #!gets2i, d7
  trap #1
- move.l d0, d1
+ move.l d0, d2
  move #0, d0
  move #!sets2i, d7
  trap #1
@@ -319,7 +319,7 @@ scsi:
 scsi01:
  lea nv(pc), a0
 scsi10:
- exg d0, d1
+ exg d0, d2
  move #!sets2i, d7
  trap #1
  bsr write
