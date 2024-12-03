@@ -34,7 +34,7 @@ Die empfangenen files sollten dann im aktuellen Laufwerk liegen
    
 
 Default (ohne commandline parameter) ist auf beiden Seiten (PC und NKC) 19200 Baud welches die max. mögliche Baudrate auf der alten Ser (6551 Uart) ist. 
-Mit der GDP-FPGA sind max. 115200 Baud möglich
+Mit der GDP-FPGA und dem Tang-Nano sind max. 115200 Baud möglich
 
 ACHTUNG:
 ********
