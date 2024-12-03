@@ -16,8 +16,8 @@ Beispiel:
 (I) Senden einer Datei zum NKC:
 1. Starten des Slaves am NKC (mit 57600 Baud)
    rs232d 57600
-1a. Starten des Slaves am NKC (mit 115200 Baud - sind default)
-   rs232d
+1a. Starten des Slaves am NKC (mit 115200 Baud)
+   rs232d 115200
 
 2. Senden der Datei vom PC
    python dl.py -p com1 -b 115200 -u hello.68k
@@ -27,7 +27,7 @@ Die empfangenen files sollten dann im aktuellen Laufwerk liegen
 
 (II) Empfangen einer Datei vom NKC:
 1. Starten des Slaves am NKC (mit 115200 Baud)
-   rs232d 
+   rs232d 115200
 
 2. Empfangen der Datei am PC
    python dl.py -p com1 -b 115200 -d 1:rs232d.asm
