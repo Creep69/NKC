@@ -1,5 +1,8 @@
 # BUS2 mit Platinenhalterung 
 
+Stand: 15.10.2025
+
+
 ## Platinenhalter
 Der Platinenhalter kann mit der STL-Datei 20251010_halter.stl auf dem 3D-Drucker ausgedruckt werden.
 
@@ -14,6 +17,3 @@ Für die Nachbearbeitung verwendete ich eine Proxxon Micromot mit einem Fräser 
 Der BUS unterstützt alle notwendigen Stromversorgungen (+5 V, +12 V, -12V, -5 V). In den meisten Fällen genügt heute 5 Volt. Hier ist ein Beispiel mit den Anderson Powerpoles als Vorschlag für 5 Volt gezeigt.
 
 
-15.10.2025
-
-DK9RD / J. Reichelsdorfer
